@@ -18,7 +18,7 @@ changeColor.addEventListener("click", async () => {
       links = []
       for (let video of videos) {
         links.push(video.href)
-        if (links.length == 2) {
+        if (links.length == 6) {
           break
         }
       }

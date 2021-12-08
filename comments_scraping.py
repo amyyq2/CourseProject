@@ -24,6 +24,7 @@ def create_comments_df(youtube_url):
   chrome_options.add_argument('--headless')
   chrome_options.add_argument('--no-sandbox')
   chrome_options.add_argument('--disable-dev-shm-usage')
+  chrome_options.add_argument("--mute-audio")
   # driver = webdriver.Chrome('chromedriver',chrome_options=chrome_options)
 
   with Chrome('chromedriver',chrome_options=chrome_options) as driver:
@@ -43,9 +44,9 @@ def create_comments_df(youtube_url):
   df = pd.DataFrame(data, columns=['comment'])
   return df
 
-df = create_comments_df("https://www.youtube.com/watch?v=0EVVKs6DQLo")
+# df = create_comments_df("https://www.youtube.com/watch?v=0EVVKs6DQLo")
 
-df
+# df
 
 """# Data Cleaning
 - Filter out non-english comments
@@ -77,7 +78,7 @@ def clean_df(df):
   df.drop_duplicates()
   return df
 
-clean_df(df)
+# clean_df(df)
 
 """# Sentiment Analysis
 **Using the Vader Sentiment Analysis package, here is how we will using the output to classify the output sentiment ([from the docs](https://github.com/cjhutto/vaderSentiment)):**
@@ -137,7 +138,7 @@ def avg_comment_sentiment(comment_df):
     # print("# comments is: ", count)
     overall_sentiment = sentiment_score_total/count
 
-    # print("overall sentiment is: ", overall_sentiment)
+    print("overall sentiment is: ", overall_sentiment)
 
 
     # # decide sentiment as positive, negative and neutral
