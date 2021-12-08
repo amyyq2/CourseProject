@@ -5,6 +5,13 @@ Original file is located at
     https://colab.research.google.com/drive/1wagmUG00udJl4iagzF6437jG7jJE-INk
 """
 
+import logging
+import threading, queue
+
+import nltk
+nltk.download('words')
+from nltk.corpus import words
+
 import time
 from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
@@ -33,7 +40,7 @@ def create_comments_df(youtube_url):
       # driver.get("https://www.youtube.com/watch?v=YbJOTdZBX1g") # baby shark
       driver.get(youtube_url)
 
-      for item in range(40): # can change this range to get more/less
+      for item in range(60): # can change this range to get more/less
           wait.until(EC.visibility_of_element_located((By.TAG_NAME, "body"))).send_keys(Keys.END)
           # time.sleep(15)
 
@@ -53,13 +60,6 @@ def create_comments_df(youtube_url):
 - Filter out EXACT duplicate comments
 """
 
-'''
-Removing all non-english comments
-'''
-from langdetect import detect
-
-def detect_lang(text):
-    return detect(text)
 
 """
 Function to clean the dataframe of comments
@@ -69,10 +69,9 @@ def clean_df(df):
   df = df.drop([0, 1])
   # print(df)
   # remove any comments that are a language other than English
-  try:
-    df.drop(df[df['comment'].map(detect_lang) != "en"].index, inplace = True)
-  except Exception as err:
-    print("error: {0}".format(err))
+  Word = list(set(words.words()))
+
+  df = df[df['comment'].str.contains('|'.join(Word))]
 
   # remove duplicate comments
   df.drop_duplicates()
@@ -157,16 +156,32 @@ def avg_comment_sentiment(comment_df):
 """# Parallelization/Multi-Threading"""
 
 '''
-Getting a list of URLs and running our sentiment analysis on each of the videos
+Helper function for each thread to scrape comments, clean them, and find overall sentiment of comments
 '''
-
-def sentiment_analyze_urls(urls):
-  # TODO: start comment scraping of all videos at the same time + analyze asap + print out asap/send info asap
-  final_sentiments = []
-  for url in urls:
+def sentiment_analyze_one_url(url, queue):
     comments_df = create_comments_df(url)
     comments_df = clean_df(comments_df)
-    final_sentiments.append(avg_comment_sentiment(comments_df))
+    queue.put(avg_comment_sentiment(comments_df))
+
+'''
+Overall function to analyze the sentiment of multiple videos given a list of urls
+'''
+def sentiment_analyze_urls(urls):
+  # Using threads to start comment scraping and sentiment analysis on all urls at the same time
+  threads = list()
+  q = queue.Queue()
+  final_sentiments = []
+  for url in urls:
+    x = threading.Thread(target=sentiment_analyze_one_url, args=(url, q))
+    threads.append(x)
+    x.start()
+
+  # Get response from the threads and append them to the final sentiment list
+  for index, t in enumerate(threads):
+    response = q.get()
+    final_sentiments.append(response)
+    t.join()
+
   return final_sentiments
 
 # TEST
