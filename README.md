@@ -15,3 +15,8 @@ Install vaderSentiment:
 
 Install nltk:
 - pip install nltk
+
+
+NOTE: User of extension must restart server code every time the channel is refreshed or navigated to a new channel. They can do this by:
+1) ^C
+2) ```python3 comments_scraping.py```
