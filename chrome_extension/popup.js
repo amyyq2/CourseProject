@@ -12,34 +12,55 @@ changeColor.addEventListener("click", async () => {
   // current page
   function setPageBackgroundColor() {
     chrome.storage.sync.get("color", ({ color }) => {
-      x = document.getElementsByClassName("yt-simple-endpoint style-scope ytd-grid-video-renderer")
+      var positive = 98
+      var negative = 360
+      videos = document.getElementsByClassName("yt-simple-endpoint style-scope ytd-grid-video-renderer")
       links = []
-      for (let element of x) {
-        links.push(element.href)
+      for (let video of videos) {
+        links.push(video.href)
+        if (links.length == 2) {
+          break
+        }
       }
+
       fetch('http://localhost:8080', {
         headers: {'content-length': 100},
         method: 'POST',
         body: JSON.stringify(links)
       }).then(r => r.text()).then(result => {
         console.log(typeof result[0])
-        sentiments = (result.substring(1, result.length - 1)).split(",")
-        var nums = []
-        for (let i = 0; i < sentiments.length; i++) {
-          nums.push(parseFloat(sentiments[i], 10))
+        sentiment_text = (result.substring(1, result.length - 1)).split(",")
+        var sentiment_nums = []
+        for (let i = 0; i < sentiment_text.length; i++) {
+          sentiment_nums.push(parseFloat(sentiment_text[i], 10))
         }
-        console.log(nums)
+        console.log(sentiment_nums)
+
+        for (let i=0; i < sentiment_nums.length; i++) {
+          var l = (30 * (1-Math.abs(sentiment_nums[i]))) + 40
+          l /= 100;
+
+          var video_color = 0
+          var h = 0
+          if (sentiment_nums[i] > 0) {
+            h = positive
+          } else {
+            h = negative
+          }
+          var s = 100
+
+          const a = s * Math.min(l, 1 - l) / 100;
+          const f = n => {
+            const k = (n + h / 30) % 12;
+            const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+            return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
+          };
+          video_color = `#${f(0)}${f(8)}${f(4)}`;
+          console.log(video_color)
+
+          videos[i].style.backgroundColor = video_color
+        }
       })
-      // for (let element of x) {
-      //     element.style.backgroundColor = color
-      // }
-      // var spawn = import("child_process");
-      // // const { spawn } = require('child_process');
-      // const childProcess = spawn('python', ['hello.py'])
-      // childProcess.stdout.on('data', (data) => {
-      //     console.log(`stdout: ${data}`)
-      // });
-    //   document.body.style.backgroundColor = color;
     });
   }
   
