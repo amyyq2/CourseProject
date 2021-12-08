@@ -16,7 +16,7 @@ function setPageBackgroundColor() {
     var negative = 360
     var neutral = 190
     var videos = document.getElementsByClassName("yt-simple-endpoint style-scope ytd-grid-video-renderer")
-    var batch_size = 2
+    var batch_size = 5
     let batch_num = 0
     links = []
     for (let video of videos) {
