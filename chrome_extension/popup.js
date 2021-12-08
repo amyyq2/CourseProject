@@ -14,6 +14,7 @@ changeColor.addEventListener("click", async () => {
     chrome.storage.sync.get("color", ({ color }) => {
       var positive = 98
       var negative = 360
+      var neutral = 190
       videos = document.getElementsByClassName("yt-simple-endpoint style-scope ytd-grid-video-renderer")
       links = []
       for (let video of videos) {
@@ -42,10 +43,12 @@ changeColor.addEventListener("click", async () => {
 
           var video_color = 0
           var h = 0
-          if (sentiment_nums[i] > 0) {
+          if (sentiment_nums[i] > 0.05) {
             h = positive
-          } else {
+          } else if (sentiment_nums[i] < -0.05) {
             h = negative
+          } else {
+            h = neutral
           }
           var s = 100
 
