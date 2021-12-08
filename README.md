@@ -12,3 +12,6 @@ Install ChromeDriver:
 
 Install vaderSentiment:
 - pip install vaderSentiment
+
+Install nltk:
+- pip install nltk
