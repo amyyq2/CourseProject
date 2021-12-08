@@ -55,6 +55,6 @@ Install nltk:
       - Note: The darker the color the more positive/negative the comments' average sentiment is
 
 
-NOTE: User of extension must restart server code every time the channel is refreshed or navigated to a new channel. They can do this by:
+NOTE: User of extension must restart server code every time the channel is refreshed or navigated to a new channel. They can do this by executing the following commands in the terminal where the server is running:
 1) ^C
 2) ```python3 comments_scraping.py```
