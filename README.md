@@ -47,7 +47,12 @@ Install nltk:
 5) Click on the Rice extension icon in the top right corner. You should see a square with a button in the middle.
    - <img width="97" alt="Screen Shot 2021-12-08 at 1 35 22 PM" src="https://user-images.githubusercontent.com/55038545/145272541-37f4ee23-0029-450f-9e87-f2c836f9e1df.png">
 6) Click the center button and wait for your results! Give it at least 1.5 minutes to ensure it works. 
-
+7) You might see something like this:
+      - ![264590379_1007285726669890_6546290131030666602_n](https://user-images.githubusercontent.com/55038545/145273442-07336086-38ed-4391-b685-8e77f2d194cc.png)
+      - A video title highlighted in red means the video's comment section contains an average negative sentiment
+      - A video title highlighted in green means the video's comment section contains an average positive sentiment
+      - A video title highlighted in blue menas the video's comment section contains an averager neutral sentiment
+      - Note: The darker the color the more positive/negative the comments' average sentiment is
 
 
 NOTE: User of extension must restart server code every time the channel is refreshed or navigated to a new channel. They can do this by:
