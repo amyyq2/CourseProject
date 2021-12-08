@@ -146,22 +146,23 @@ def avg_comment_sentiment(comment_df):
         sentiment_score_total = sentiment_score_total + sentiment
 
 
-    print("sentiment score total is: ", sentiment_score_total)
-    print("# comments is: ", count)
+    # print("sentiment score total is: ", sentiment_score_total)
+    # print("# comments is: ", count)
     overall_sentiment = sentiment_score_total/count
 
-    print("overall sentiment is: ", overall_sentiment)
+    # print("overall sentiment is: ", overall_sentiment)
 
 
-    # decide sentiment as positive, negative and neutral
-    if overall_sentiment >= 0.05 :
-        print("Positive")
+    # # decide sentiment as positive, negative and neutral
+    # if overall_sentiment >= 0.05 :
+    #     print("Positive")
  
-    elif overall_sentiment <= - 0.05 :
-        print("Negative")
+    # elif overall_sentiment <= - 0.05 :
+    #     print("Negative")
  
-    else :
-        print("Neutral")
+    # else :
+    #     print("Neutral")
+    return  overall_sentiment
 
 test1 = "I hate you"
 test2 = "they ATE they ATE they A T E"
@@ -179,10 +180,12 @@ Getting a list of URLs and running our sentiment analysis on each of the videos
 
 def sentiment_analyze_urls(urls):
   # TODO: start comment scraping of all videos at the same time + analyze asap + print out asap/send info asap
+  final_sentiments = []
   for url in urls:
     comments_df = create_comments_df(url)
     comments_df = clean_df(comments_df)
-    avg_comment_sentiment(comments_df)
+    final_sentiments.append(avg_comment_sentiment(comments_df))
+  return final_sentiments
 
 # TEST
 
