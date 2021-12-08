@@ -1,35 +1,32 @@
 // When the button is clicked, inject setPageBackgroundColor into current page
 changeColor.addEventListener("click", async () => {
-    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      function: setPageBackgroundColor,
-    });
-  });
-  
-  // The body of this function will be executed as a content script inside the
-  // current page
-  function setPageBackgroundColor() {
-    chrome.storage.sync.get("color", ({ color }) => {
-      var positive = 98
-      var negative = 360
-      var neutral = 190
-      videos = document.getElementsByClassName("yt-simple-endpoint style-scope ytd-grid-video-renderer")
-      links = []
-      for (let video of videos) {
-        links.push(video.href)
-        if (links.length == 6) {
-          break
-        }
-      }
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
-      fetch('http://localhost:8080', {
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: setPageBackgroundColor,
+  });
+});
+
+// The body of this function will be executed as a content script inside the
+// current page
+function setPageBackgroundColor() {
+  chrome.storage.sync.get("color", ({ color }) => {
+    var positive = 98
+    var negative = 360
+    var neutral = 190
+    var videos = document.getElementsByClassName("yt-simple-endpoint style-scope ytd-grid-video-renderer")
+    var batch_size = 5
+    let batch_num = 0
+    links = []
+    for (let video of videos) {
+      links.push(video.href)
+      if (links.length == batch_size) {
+        fetch('http://localhost:8080', {
         headers: {'content-length': 100},
         method: 'POST',
         body: JSON.stringify(links)
       }).then(r => r.text()).then(result => {
-        console.log(typeof result[0])
         sentiment_text = (result.substring(1, result.length - 1)).split(",")
         var sentiment_nums = []
         for (let i = 0; i < sentiment_text.length; i++) {
@@ -37,7 +34,7 @@ changeColor.addEventListener("click", async () => {
         }
         console.log(sentiment_nums)
 
-        for (let i=0; i < sentiment_nums.length; i++) {
+        for (let i = 0; i < sentiment_nums.length; i++) {
           var l = (30 * (1-Math.abs(sentiment_nums[i]))) + 40
           l /= 100;
 
@@ -59,11 +56,13 @@ changeColor.addEventListener("click", async () => {
             return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
           };
           video_color = `#${f(0)}${f(8)}${f(4)}`;
-          console.log(video_color)
 
-          videos[i].style.backgroundColor = video_color
+          videos[i+(batch_num*batch_size)].style.backgroundColor = video_color
         }
+        batch_num++
       })
-    });
-  }
-  
+      links = []
+      }
+    }
+  });
+}

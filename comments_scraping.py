@@ -9,8 +9,17 @@ import logging
 import threading, queue
 
 import nltk
+import ssl
+
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    pass
+else:
+    ssl._create_default_https_context = _create_unverified_https_context
 nltk.download('words')
 from nltk.corpus import words
+
 
 import time
 from selenium.webdriver import Chrome
@@ -40,7 +49,7 @@ def create_comments_df(youtube_url):
       # driver.get("https://www.youtube.com/watch?v=YbJOTdZBX1g") # baby shark
       driver.get(youtube_url)
 
-      for item in range(60): # can change this range to get more/less
+      for item in range(40): # can change this range to get more/less
           wait.until(EC.visibility_of_element_located((By.TAG_NAME, "body"))).send_keys(Keys.END)
           # time.sleep(15)
 
@@ -175,6 +184,7 @@ def sentiment_analyze_urls(urls):
     x = threading.Thread(target=sentiment_analyze_one_url, args=(url, q))
     threads.append(x)
     x.start()
+    
 
   # Get response from the threads and append them to the final sentiment list
   for index, t in enumerate(threads):
@@ -186,8 +196,8 @@ def sentiment_analyze_urls(urls):
 
 # TEST
 
-urls = ["https://www.youtube.com/watch?v=0EVVKs6DQLo", "https://www.youtube.com/watch?v=YbJOTdZBX1g"]
-sentiment_analyze_urls(urls)
+# urls = ["https://www.youtube.com/watch?v=0EVVKs6DQLo", "https://www.youtube.com/watch?v=YbJOTdZBX1g"]
+# sentiment_analyze_urls(urls)
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
