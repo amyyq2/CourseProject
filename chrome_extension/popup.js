@@ -35,8 +35,21 @@ function setPageBackgroundColor() {
         console.log(sentiment_nums)
 
         for (let i = 0; i < sentiment_nums.length; i++) {
-          var l = (30 * (1-Math.abs(sentiment_nums[i]))) + 40
-          l /= 100;
+          // The more postive the sentiment, the darker the green
+          // The more negative the sentiment, the darker the red
+          if (sentiment_nums[i] >= 0.05 && sentiment_nums[i] < 0.4) {
+            l = 0.7
+          } else if (sentiment_nums[i] >= 0.4 && sentiment_nums[i] < 0.65) {
+            l = 0.5
+          } else if (sentiment_nums[i] >= 0.65) {
+            l = 0.3
+          } else if (sentiment_nums[i] < 0.05 && sentiment_nums[i] > -0.05) {
+            l = 0.5
+          } else if (sentiment_nums[i] < -0.05 && sentiment_nums[i] > -0.055) {
+            l = 0.5
+          } else if (sentiment_nums[i] <= 0.055) {
+            l = 0.7
+          }
 
           var video_color = 0
           var h = 0
