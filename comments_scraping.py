@@ -199,6 +199,8 @@ def sentiment_analyze_urls(urls):
 # urls = ["https://www.youtube.com/watch?v=0EVVKs6DQLo", "https://www.youtube.com/watch?v=YbJOTdZBX1g"]
 # sentiment_analyze_urls(urls)
 
+# Server Code
+# This code is largely inspired by the following tutorial: https://pythonbasics.org/webserver/ 
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import time
 import json
@@ -207,16 +209,25 @@ import json
 hostName = "localhost"
 serverPort = 8080
 class MyServer(BaseHTTPRequestHandler):
+    # This function accepts post requests from http://localhost:8080
+    # Receives a list of video urls from the POST request
+    # Responds back with a list of positivity/negativity percentages for each video
     def do_POST(self):
+        # read and parse data(list of video urls) sent by client
         length = self.headers["Content-Length"]
         body = (self.rfile.read(int(length)).decode('utf-8'))[1:-1]
         body = body.replace('\"', '')
         urls = body.split(",")
+
+        # Pass urls to sentiment analyzer above
         sentiments = sentiment_analyze_urls(urls)
+
+        # Send 200 OK response
         self.send_response(200)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Content-type", "text/html")
         self.end_headers()
+        # Send list of positivity/negativity percentage data
         self.wfile.write(bytes(json.dumps(sentiments), "utf-8"))
 
 if __name__ == "__main__":        
