@@ -1,5 +1,7 @@
 # CourseProject: Chrome Extension that analyzes the sentiment of comments on a page of Youtube videos
 
+Video Tutorial: https://drive.google.com/file/d/1DyVwC1LILAxA8Otna0wsqkc5GQsomNcI/view?usp=sharing
+
 ## Getting Started
 
 Install ChromeDriver:
