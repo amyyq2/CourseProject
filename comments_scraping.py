@@ -62,7 +62,9 @@ def create_comments_df(youtube_url):
 
 
 """
-Function to clean the dataframe of comments
+Function to clean the dataframe of comments, removes non-english comments 
+parameter: dataframe to clean
+returns: cleaned dataframe
 """
 def clean_df(df):
   # remove first two rows
@@ -85,6 +87,12 @@ positive sentiment: compound score >= 0.05
 neutral sentiment: (compound score > -0.05) and (compound score < 0.05)
 negative sentiment: compound score <= -0.05
 """
+
+"""
+Function to compute a compound sentiment score for a single sentence
+parameter: sentence to output sentiment for
+returns: sentiment score of sentence
+"""
 def sentiment_scores(sentence):
     # Create a SentimentIntensityAnalyzer object.
     sid_obj = SentimentIntensityAnalyzer()
@@ -100,6 +108,8 @@ def sentiment_scores(sentence):
  
 """
 Function that takes in a dataframe of comments and returns the average overall sentiment of all the comments
+parameter: dataframe of comments
+returns: averaged compound sentiment of all comments in the dataframe
 """
 def avg_comment_sentiment(comment_df):
     # convert df to list
